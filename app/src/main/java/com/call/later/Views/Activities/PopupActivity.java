@@ -6,14 +6,13 @@ import android.app.job.JobScheduler;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -59,6 +58,10 @@ public class PopupActivity extends AppCompatActivity {
         callTime = intent.getStringExtra("callTime");
         TextView msg = findViewById(R.id.remainder_msg_textView);
         msg.setText("Do you want to get reminded after some time? For calling " + callName + " " + callNumber + " ?");
+        ImageView close = findViewById(R.id.closeButton);
+        close.setOnClickListener(v -> {
+            finishAffinity();
+        });
         TextView afterSetRemainder = findViewById(R.id.after_remainder_set);
         TextView text = findViewById(R.id.textView3);
         ToggleButton mins15button = findViewById(R.id.mins15button);
@@ -94,6 +97,10 @@ public class PopupActivity extends AppCompatActivity {
                 mins30button.setBackgroundResource(R.drawable.shape_off);
                 customTimebutton.setChecked(false);
                 customTimebutton.setBackgroundResource(R.drawable.shape_off);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.add(Calendar.MINUTE, 15);
+                afterSetRemainder.setText(calendar.get(Calendar.HOUR) + " : " + Calendar.MINUTE + " " + (customCalendar.get(Calendar.AM_PM) == 0 ? "AM" : "PM"));
                 System.out.println("date obj(15):" + date.toString());
                 afterSetRemainder.setVisibility(View.VISIBLE);
                 text.setVisibility(View.VISIBLE);
@@ -112,8 +119,11 @@ public class PopupActivity extends AppCompatActivity {
                 mins15button.setChecked(false);
                 mins15button.setBackgroundResource(R.drawable.shape_off);
                 customTimebutton.setChecked(false);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.add(Calendar.MINUTE, 30);
+                afterSetRemainder.setText(calendar.get(Calendar.HOUR) + " : " + Calendar.MINUTE + " " + (customCalendar.get(Calendar.AM_PM) == 0 ? "AM" : "PM"));
                 customTimebutton.setBackgroundResource(R.drawable.shape_off);
-//                    date=addMinutesToDate(30,date);
                 System.out.println("date obj(30):" + date.toString());
                 afterSetRemainder.setVisibility(View.VISIBLE);
                 text.setVisibility(View.VISIBLE);
@@ -157,41 +167,37 @@ public class PopupActivity extends AppCompatActivity {
 
         save.setOnClickListener(view -> {
             CallEventItem callEventItem = null;
+
             ComponentName serviceComponent = new ComponentName(getApplicationContext(), TestJobService.class);
-            PersistableBundle bundle = new PersistableBundle();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            if (mins15button.isChecked()) {
-                calendar.add(Calendar.MINUTE, 15);
-                bundle.putString("dateAndTime", date.toString());
-                callEventItem = new CallEventItem(callNumber, callName, format.format(calendar.getTime()));
-//                builder.setMinimumLatency(15 * 1000 * 60); // wait at least
-//                builder.setOverrideDeadline(15 * 1000 * 60); // maximum delay
-            } else if (mins30button.isChecked()) {
-                calendar.add(Calendar.MINUTE, 30);
-                callEventItem = new CallEventItem(callNumber, callName, format.format(calendar.getTime()));
-                bundle.putString("dateAndTime", date.toString());
-//                builder.setMinimumLatency(30 * 1000 * 60); // wait at least
-//                builder.setOverrideDeadline(30 * 1000 * 60); // maximum delay
-            } else if (customTimebutton.isChecked()) {
-                long differenceInMillisecond = 0L;
-                differenceInMillisecond = customCalendar.getTimeInMillis() - calendar.getTimeInMillis();
-//                builder.setMinimumLatency(differenceInMillisecond); // wait at least
-//                builder.setOverrideDeadline(differenceInMillisecond); // maximum delay
-                callEventItem = new CallEventItem(callNumber, callName, date_str);
-                bundle.putString("dateAndTime", date_str);
-
-            }
-            bundle.putString("callName", callName==null?"Unknown":callName);
-            bundle.putString("callNumber", callNumber);
-            afterSetRemainder.setText(calendar.get(Calendar.HOUR) + " : " + calendar.get(Calendar.MINUTE) + " " + (calendar.get(Calendar.AM_PM) == 0 ? "AM" : "PM"));
-
-
             long id  = callItemViewModel.insert(callEventItem);
             if(id!=-1) {
                 JobInfo.Builder builder = new JobInfo.Builder((int)id, serviceComponent);
-                builder.setMinimumLatency(5 * 1000); // wait at least
-                builder.setOverrideDeadline(5 * 1000); // maximum delay
+                PersistableBundle bundle = new PersistableBundle();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                if (mins15button.isChecked()) {
+                    calendar.add(Calendar.MINUTE, 15);
+                    bundle.putString("dateAndTime", date.toString());
+                    callEventItem = new CallEventItem(callNumber, callName, format.format(calendar.getTime()));
+                    builder.setMinimumLatency(15 * 1000 * 60); // wait at least
+                    builder.setOverrideDeadline(15 * 1000 * 60); // maximum delay
+                } else if (mins30button.isChecked()) {
+                    calendar.add(Calendar.MINUTE, 30);
+                    callEventItem = new CallEventItem(callNumber, callName, format.format(calendar.getTime()));
+                    bundle.putString("dateAndTime", date.toString());
+                    builder.setMinimumLatency(30 * 1000 * 60); // wait at least
+                    builder.setOverrideDeadline(30 * 1000 * 60); // maximum delay
+                } else if (customTimebutton.isChecked()) {
+                    long differenceInMillisecond = 0L;
+                    differenceInMillisecond = customCalendar.getTimeInMillis() - calendar.getTimeInMillis();
+                    builder.setMinimumLatency(differenceInMillisecond); // wait at least
+                    builder.setOverrideDeadline(differenceInMillisecond); // maximum delay
+                    callEventItem = new CallEventItem(callNumber, callName, date_str);
+                    bundle.putString("dateAndTime", date_str);
+
+                }
+                bundle.putString("callName", callName == null ? "Unknown" : callName);
+                bundle.putString("callNumber", callNumber);
                 bundle.putInt("id",(int)id);
                 builder.setExtras(bundle);
                 JobScheduler jobScheduler = getApplicationContext().getSystemService(JobScheduler.class);

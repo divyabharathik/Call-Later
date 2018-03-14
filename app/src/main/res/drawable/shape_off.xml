@@ -5,6 +5,7 @@
     android:shape="rectangle" >
     //There are many other shapes also available they are rectangle,ring,line and oval
     <solid android:color="#fca29b"/>
+    <corners android:radius="4dp"></corners>
     //applying the colour to the button.
     <stroke android:width="2dp"
         android:height="2dp"
