@@ -1,23 +1,14 @@
 package com.call.later.BroadCastListeners;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.call.later.Views.Activities.MainActivity;
 import com.call.later.Views.Activities.PopupActivity;
-import com.call.later.Views.CallLogHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
