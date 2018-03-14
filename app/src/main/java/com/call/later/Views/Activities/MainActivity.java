@@ -1,11 +1,7 @@
 package com.call.later.Views.Activities;
 
-import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.Index;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 
 import com.call.later.Model.CallEventItem;
 import com.call.later.R;
@@ -61,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     void initializeWithPermission() {
-        String[] permissions = new String[]{PROCESS_OUTGOING_CALLS, READ_CALL_LOG, Manifest.permission.READ_PHONE_STATE};
+        String[] permissions = new String[]{PROCESS_OUTGOING_CALLS, READ_CALL_LOG, READ_PHONE_STATE};
         if (ContextCompat.checkSelfPermission(this, READ_PHONE_STATE) +
                 ContextCompat.checkSelfPermission(this, READ_CALL_LOG) +
                 ContextCompat.checkSelfPermission(this, PROCESS_OUTGOING_CALLS)
@@ -97,13 +92,16 @@ public class MainActivity extends AppCompatActivity {
     public void deleteItem(CallEventItem callEventItem) {
         callItemViewModel.delete(callEventItem);
     }
+
     public void insertItem(CallEventItem callEventItem) {
         callItemViewModel.insert(callEventItem);
     }
-    public void deleteSpecificItem(int id){
-       callItemViewModel.deleteSpecificItem(id);
+
+    public void deleteSpecificItem(int id) {
+        callItemViewModel.deleteSpecificItem(id);
     }
-    public CallEventItem getSpecificItem(int id){
+
+    public CallEventItem getSpecificItem(int id) {
         return callItemViewModel.getSpecificItem(id);
     }
 

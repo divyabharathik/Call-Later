@@ -3,8 +3,10 @@ package com.call.later.Views;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import com.call.later.Persistance.CallLaterRepository;
+import android.support.annotation.NonNull;
+
 import com.call.later.Model.CallEventItem;
+import com.call.later.Persistance.CallLaterRepository;
 
 import java.util.List;
 
@@ -21,7 +23,8 @@ public class CallItemViewModel extends AndroidViewModel {
 
     public LiveData<List<CallEventItem>> getAllEventsLiveData() { return allEventsLiveData; }
 
-    public long insert(CallEventItem callEventItem) { return callLaterRepository.insert(callEventItem);
+    public long insert(@NonNull CallEventItem callEventItem) {
+        return callLaterRepository.insert(callEventItem);
 
     }
     public void delete(CallEventItem callEventItem) { callLaterRepository.delete(callEventItem); }

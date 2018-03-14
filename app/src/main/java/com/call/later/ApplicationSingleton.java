@@ -3,9 +3,10 @@ package com.call.later;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -13,7 +14,11 @@ import android.support.v4.content.ContextCompat;
 
 import com.call.later.BroadCastListeners.CallStateReceiver;
 import com.facebook.stetho.Stetho;
+
+import java.util.Objects;
+
 public class ApplicationSingleton extends Application {
+    public static final String CALL_NOTIFICATION_ID = "CallNotification";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -21,6 +26,11 @@ public class ApplicationSingleton extends Application {
 //        intent.setClass(this, CallStateReceiver.class);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            NotificationChannel channel = new NotificationChannel(CALL_NOTIFICATION_ID, "My to Calls..", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("Call Later Reminders");
+            channel.enableLights(true);
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 initializeBroadcastReceivers(getApplicationContext());
             }
