@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="reschedule_yellow">#e4db5d</color>
+    <color name="empty_bg_color">#43be4f</color>
+    <color name="empty_text_grey">#e6f9e6</color>
+    <color name="sub_text_grey">#d8e6d8</color>
+</resources>

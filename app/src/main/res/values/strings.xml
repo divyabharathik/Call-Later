@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Call Later</string>
+    <string name="call_again_in">Call Again in</string>
+    <string name="reschedule_time">Reschedule Time</string>
+    <string name="delete">Delete</string>
+    <string name="look_ma_no_remainders">Look Ma! No Remainders!</string>
+    <string name="nothing_in_here">Nothing in Here</string>
+</resources>
